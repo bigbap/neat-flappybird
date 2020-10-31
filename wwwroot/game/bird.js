@@ -46,16 +46,12 @@ export class Bird {
 
         this.score += 1;
 
-        if (this.centerY > this.height - this.radius) {
-            this.centerY = this.height - this.radius;
-            this.velocity = 0;
-        }
         if (this.centerY < 0 + this.radius) {
             this.centerY = 0 + this.radius;
             this.velocity = 0;
         }
 
-        if (pipes.filter(pipe => pipe.hit(this)).length > 0) this.dead = true;
+        if (pipes.filter(pipe => pipe.hit(this)).length > 0 || this.centerY > this.height - this.radius) this.dead = true;
     }
     calculateMove(pipes) {
         let closest = undefined;
