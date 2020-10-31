@@ -140,7 +140,7 @@ export class NeuralNetwork {
         for (let i in clone.layers) {
             const oldLayer = this.layers[i];
             clone.layers[i].weights = new Matrix(oldLayer.weights.rows, oldLayer.weights.cols,
-                (row, col) => Math.random() < 0.1 ? Math.random() - 0.5 : oldLayer.weights.data[row][col]);
+                (row, col) => Math.random() < 0.02 ? Math.random() - 0.5 : oldLayer.weights.data[row][col]);
         }
         return clone;
     }

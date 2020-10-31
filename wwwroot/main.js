@@ -29,13 +29,18 @@ class DrawingGame extends Game {
             }
         });
 
-        window.requestAnimationFrame(this.gameLoop.bind(this));
+        // window.requestAnimationFrame(this.gameLoop.bind(this));
+        this.framerate = 0;
+        
+        setTimeout(this.gameLoop.bind(this), this.framerate);
     }
     gameLoop() {
         this.update();
         this.draw();
 
-        window.requestAnimationFrame(this.gameLoop.bind(this));
+        setTimeout(this.gameLoop.bind(this), this.framerate);
+
+        // window.requestAnimationFrame(this.gameLoop.bind(this));
     }
     draw() {
         this.ctx.clearRect(0, 0, this.width, this.height);
@@ -44,7 +49,7 @@ class DrawingGame extends Game {
         this.pipes.forEach(pipe => pipe.draw(this.ctx));
 
         this.ctx.fillStyle = "rgba(255, 255, 255)";
-        this.ctx.fillText(`best is ${this.best ? this.best.name : "nobody"} with a score of ${this.best ? this.best.score : 0}`, 10, this.height - 30);
+        this.ctx.fillText(`Generation: ${this.gen}. Best is ${this.best ? this.best.name : "nobody"} with a score of ${this.best ? this.best.score : 0}`, 10, this.height - 30);
     }
 }
 
@@ -55,12 +60,14 @@ document.querySelector("#save").addEventListener("click", (ev) => {
     Api.post("save", game.best);
 });
 document.querySelector("#load").addEventListener("click", (ev) => {
+    game.framerate = 1000 / 60;
     game.mutate = false;
     game.population = 1;
     game.brain = game.best.brain;
     game.reset();
 });
 document.querySelector("#evolve").addEventListener("click", (ev) => {
+    game.framerate = 0;
     game.mutate = true;
     game.population = evolutionPopulation;
     game.reset();

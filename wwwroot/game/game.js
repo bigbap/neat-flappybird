@@ -17,6 +17,8 @@ export class Game {
         this.best = undefined;
         this.mutate = true;
 
+        this.gen = 0;
+
         this.reset();
     }
     reset() {
@@ -60,5 +62,6 @@ export class Game {
         this.best = !this.best || fittest.score > this.best.score ? fittest : this.best;
 
         this.brain = fittest.brain;
+        this.gen++;
     }
 }
