@@ -7,7 +7,7 @@ export class Api {
                     resolve(this.responseText);
                 }
             };
-            xhttp.open("POST", `http://localhost:3000/NN/${endpoint}`, true);
+            xhttp.open("POST", `http://localhost:3000/${endpoint}`, true);
             xhttp.setRequestHeader("Content-type", "application/json");
             xhttp.send(JSON.stringify(body));
         });
@@ -20,7 +20,7 @@ export class Api {
                     resolve(this.responseText);
                 }
             };
-            xhttp.open("GET", `http://localhost:3000/NN/${endpoint}`, true);
+            xhttp.open("GET", `http://localhost:3000/${endpoint}`, true);
             xhttp.send();
         });
     }

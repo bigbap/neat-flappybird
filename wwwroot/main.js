@@ -1,6 +1,7 @@
 import { DrawingBird } from "./game/drawing/drawingbird.js";
 import { DrawingPipe } from "./game/drawing/drawingpipe.js";
 import { Game } from "./game/game.js";
+import { Api } from "./api.js";
 
 const pipeFactory = (w, h) => new DrawingPipe(w, h);
 const birdFactory = (w, h, b, m) => new DrawingBird(w, h, b, m);
@@ -50,6 +51,9 @@ class DrawingGame extends Game {
 const evolutionPopulation = 250;
 const game = new DrawingGame(evolutionPopulation);
 
+document.querySelector("#save").addEventListener("click", (ev) => {
+    Api.post("save", game.best);
+});
 document.querySelector("#load").addEventListener("click", (ev) => {
     game.mutate = false;
     game.population = 1;
