@@ -52,7 +52,7 @@ export class Game {
         this.pipes.forEach(pipe => pipe.update());
 
         this.pipes = this.pipes.filter(pipe => !pipe.delete);
-        if (this.pipes.length > 0 && this.pipes[this.pipes.length - 1].x < this.width / 2)
+        if (this.pipes.length > 0 && this.pipes[this.pipes.length - 1].x < this.width / 3)
             this.pipes.push(this.newPipe(this.width, this.height));
     }
     getFittest() {
