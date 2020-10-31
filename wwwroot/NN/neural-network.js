@@ -45,8 +45,9 @@ export class NeuralNetwork {
         const input_n = [props.inputs, ...props.hiddenLayers];
         const layers_n = [...props.hiddenLayers, props.outputs];
 
-        this.layers = props.layers || [...Array(layers_n.length)].map((v, i) => new Layer(
-            new Matrix(layers_n[i], input_n[i], () => rng.nextFloat() - 0.5),
+        this.layers = [...Array(layers_n.length)].map((v, i) => new Layer(
+            new Matrix(layers_n[i], input_n[i], (row, col) =>
+                !!props.layers ? props.layers[i].weights.data[row][col] : rng.nextFloat() - 0.5),
             new Matrix(layers_n[i], 1, () => 0),
             Activations.Sigmoid
         ));
@@ -130,17 +131,16 @@ export class NeuralNetwork {
             // delta.print();
         }
     }
-    mutate() {
+    clone() {
         const clone = new NeuralNetwork({
             inputs: this.inputs,
             outputs: this.outputs,
             hiddenLayers: this.hiddenLayers,
+            layers: this.layers,
             lr: this.lr
         });
-        for (let i in clone.layers) {
-            const oldLayer = this.layers[i];
-            clone.layers[i].weights = new Matrix(oldLayer.weights.rows, oldLayer.weights.cols,
-                (row, col) => Math.random() < 0.02 ? Math.random() - 0.5 : oldLayer.weights.data[row][col]);
+        for (let layer of clone.layers) {
+            layer.weights = layer.weights.apply((v, r, c) => Math.random() < 0.02 ? Math.random() - 0.5 : v);
         }
         return clone;
     }

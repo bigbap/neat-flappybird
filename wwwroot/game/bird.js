@@ -14,17 +14,18 @@ export class Bird {
         this.centerY = this.height / 2;
 
         this.velocity = 0;
-        this.maxVelocity = 5;
-        this.gravity = 0.5;
+        this.maxVelocity = 10;
+        this.gravity = 0.7;
 
-        this.jump = -14;
+        this.jump = -12;
+        this.jumps = 0;
 
         this.score = 0;
         this.dead = false;
         this.smart = !!brain;
 
         if (brain instanceof NeuralNetwork) {
-            this.brain = mutate ? brain.mutate() : brain;
+            this.brain = brain;
         } else if (this.smart) this.brain = new NeuralNetwork({
             "hiddenLayers": [10],
             "inputs": 5,
@@ -35,6 +36,7 @@ export class Bird {
     up(fromBrain = false) {
         if (this.smart && !fromBrain) return;
         this.velocity += this.jump;
+        this.jumps++;
     }
     update(pipes) {
         if (this.dead) return;
@@ -56,7 +58,7 @@ export class Bird {
     calculateMove(pipes) {
         let closest = undefined;
         pipes.forEach(pipe => {
-            if (pipe.x > this.centerX + this.radius && (!closest || pipe.x < closest.x)) {
+            if (pipe.x + pipe.width > this.centerX + this.radius && (!closest || pipe.x < closest.x)) {
                 closest = pipe;
             }
         });

@@ -6,19 +6,15 @@ import { Api } from "./api.js";
 const pipeFactory = (w, h) => new DrawingPipe(w, h);
 const birdFactory = (w, h, b, m) => new DrawingBird(w, h, b, m);
 class DrawingGame extends Game {
-    constructor(population = 1) {
-        super(pipeFactory, birdFactory, population);
+    constructor(canvasId, population = 1, mutate = false) {
+        super(pipeFactory, birdFactory, population, mutate);
 
-        const canvas = document.createElement('canvas');
+        const canvas = document.querySelector(canvasId);
 
-        canvas.id = "game";
         canvas.width = this.width;
         canvas.height = this.height;
         canvas.style.zIndex = 8;
-        canvas.style.position = "absolute";
         canvas.style.border = "1px solid";
-
-        document.querySelector("body").appendChild(canvas);
 
         this.ctx = canvas.getContext("2d");
         this.ctx.font = "20px Arial";
@@ -29,9 +25,8 @@ class DrawingGame extends Game {
             }
         });
 
-        // window.requestAnimationFrame(this.gameLoop.bind(this));
         this.framerate = 0;
-        
+
         setTimeout(this.gameLoop.bind(this), this.framerate);
     }
     gameLoop() {
@@ -39,8 +34,6 @@ class DrawingGame extends Game {
         this.draw();
 
         setTimeout(this.gameLoop.bind(this), this.framerate);
-
-        // window.requestAnimationFrame(this.gameLoop.bind(this));
     }
     draw() {
         this.ctx.clearRect(0, 0, this.width, this.height);
@@ -49,12 +42,13 @@ class DrawingGame extends Game {
         this.pipes.forEach(pipe => pipe.draw(this.ctx));
 
         this.ctx.fillStyle = "rgba(255, 255, 255)";
-        this.ctx.fillText(`Generation: ${this.gen}. Best is ${this.best ? this.best.name : "nobody"} with a score of ${this.best ? this.best.score : 0}`, 10, this.height - 30);
+        this.ctx.fillText(`Current Generation: ${this.gen}. Best Generation: ${this.best ? this.best.gen : "none"} with a score of ${this.best ? this.best.score : 0}`, 10, this.height - 30);
     }
 }
 
-const evolutionPopulation = 250;
-const game = new DrawingGame(evolutionPopulation);
+const evolutionPopulation = 100;
+const game = new DrawingGame("#game", evolutionPopulation, true);
+const game2 = new DrawingGame("#gamerandom", evolutionPopulation);
 
 document.querySelector("#save").addEventListener("click", (ev) => {
     Api.post("save", game.best);

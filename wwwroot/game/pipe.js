@@ -10,7 +10,7 @@ export class Pipe {
         this.width = 35;
 
         this.speed = 6;
-        this.spacing = 175;
+        this.spacing = 150;
 
         this.topPipe = RandomRange(10, this.ctxHeight - this.spacing - 10);
         this.bottomPipe = this.ctxHeight - (this.topPipe + this.spacing);
@@ -28,9 +28,9 @@ export class Pipe {
     }
 
     hit(bird) {
-        const yCollision = bird.centerY + bird.radius < this.topPipe ||
-            bird.centerY - bird.radius > this.ctxHeight - this.bottomPipe
-        const xCollision = bird.centerX + bird.radius > this.x && bird.centerX - bird.radius < this.x + this.width
+        const yCollision = bird.centerY - (bird.radius / 2) < this.topPipe ||
+            bird.centerY + (bird.radius / 2) > this.ctxHeight - this.bottomPipe
+        const xCollision = bird.centerX + (bird.radius / 2) > this.x && bird.centerX - (bird.radius / 2) < this.x + this.width
         return yCollision && xCollision;
     }
 }

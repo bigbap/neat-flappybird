@@ -1,3 +1,13 @@
-#game {
+.game {
     background-color: black;
+}
+
+.grid-container {
+    display: grid;
+    grid-template-columns: auto 640px 640px auto;
+    grid-column-gap: 10px;
+}
+
+#game {
+    box-sizing: border-box;
 }
