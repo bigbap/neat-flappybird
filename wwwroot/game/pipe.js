@@ -7,10 +7,10 @@ export class Pipe {
         this.ctxWidth = width;
         this.ctxHeight = height;
 
-        this.width = 35;
+        this.width = 50;
 
         this.speed = 6;
-        this.spacing = 150;
+        this.spacing = Math.floor(Math.random() * 50) + 125;
 
         this.topPipe = RandomRange(10, this.ctxHeight - this.spacing - 10);
         this.bottomPipe = this.ctxHeight - (this.topPipe + this.spacing);

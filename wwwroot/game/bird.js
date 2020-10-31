@@ -7,7 +7,7 @@ export class Bird {
         this.width = width;
         this.height = height;
         this.name = `${firstnames[Math.floor(Math.random() * firstnames.length)]} ${surnames[Math.floor(Math.random() * surnames.length)]}`
-        this.radius = 20;
+        this.radius = 10;
         this.centerX = 50
         this.maxVelocity = 10;
         this.gravity = 0.7;

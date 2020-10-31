@@ -26,6 +26,7 @@ class DrawingGame extends Game {
         });
 
         this.framerate = 0;
+        this.show = true;
 
         setTimeout(this.gameLoop.bind(this), this.framerate);
     }
@@ -38,15 +39,17 @@ class DrawingGame extends Game {
     draw() {
         this.ctx.clearRect(0, 0, this.width, this.height);
 
-        let draws = 0;
-        for (let bird of this.birds) {
-            draws += bird.draw(this.ctx);
-            if (draws === 5) break;
-        }
-        this.pipes.forEach(pipe => pipe.draw(this.ctx));
+        if (this.show) {
+            let draws = 0;
+            for (let bird of this.birds) {
+                draws += bird.draw(this.ctx);
+                if (draws === 5) break;
+            }
+            this.pipes.forEach(pipe => pipe.draw(this.ctx));
 
-        this.ctx.fillStyle = "rgba(255, 255, 255)";
-        this.ctx.fillText(`Current Generation: ${this.gen}. Best Generation: ${this.best ? this.best.gen : "none"} with a score of ${this.best ? this.best.score : 0}`, 10, this.height - 30);
+            this.ctx.fillStyle = "rgba(255, 255, 255)";
+            this.ctx.fillText(`Current Generation: ${this.gen}. Best Generation: ${this.best ? this.best.gen : "none"} with a score of ${this.best ? this.best.score : 0}`, 10, this.height - 30);
+        }
     }
 }
 
@@ -65,7 +68,7 @@ document.querySelector("#save").addEventListener("click", (ev) => {
     Api.post("save", game.best);
 });
 document.querySelector("#load").addEventListener("click", (ev) => {
-    game.framerate = 1000 / 60;
+    game.framerate = 15;
     game.mutate = false;
     game.population = 1;
     game.brain = game.best.brain;
@@ -76,4 +79,11 @@ document.querySelector("#evolve").addEventListener("click", (ev) => {
     game.mutate = true;
     game.population = evolutionPopulation;
     game.reset();
+});
+document.querySelector("#myRange").addEventListener("change", ev => {
+    let speeds = [15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0];
+    game.framerate = speeds[ev.target.value];
+});
+document.querySelector("#showrandom").addEventListener("click", ev => {
+    game2.show = !game2.show;
 });
