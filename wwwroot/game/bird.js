@@ -6,23 +6,18 @@ export class Bird {
     constructor(width, height, brain = undefined, mutate = true) {
         this.width = width;
         this.height = height;
-
         this.name = `${firstnames[Math.floor(Math.random() * firstnames.length)]} ${surnames[Math.floor(Math.random() * surnames.length)]}`
-
         this.radius = 20;
         this.centerX = 50
-        this.centerY = this.height / 2;
-
-        this.velocity = 0;
         this.maxVelocity = 10;
         this.gravity = 0.7;
-
         this.jump = -12;
-        this.jumps = 0;
-
-        this.score = 0;
-        this.dead = false;
         this.smart = !!brain;
+
+        this.totScore = 0;
+        this.totJumps = 0;
+
+        this.reset();
 
         if (brain instanceof NeuralNetwork) {
             this.brain = brain;
@@ -32,6 +27,16 @@ export class Bird {
             "outputs": 1,
             "lr": 0.2
         });
+    }
+    reset() {
+        this.totScore += this.score;
+        this.totJumps += this.jumps;
+
+        this.centerY = this.height / 2;
+        this.velocity = 0;
+        this.jumps = 0;
+        this.score = 0;
+        this.dead = false;
     }
     up(fromBrain = false) {
         if (this.smart && !fromBrain) return;

@@ -2,7 +2,7 @@ import { Bird } from "./bird.js";
 import { Pipe } from "./pipe.js";
 
 const pipeFactory = (w, h) => new Pipe(w, h);
-const birdFactory = (w, h, b, m) => new DrawingBird(w, h, b, m);
+const birdFactory = (w, h, b, m) => new Bird(w, h, b, m);
 export class Game {
     constructor(pipeFac = pipeFactory, birdFac = birdFactory, population = 1, mutate = true) {
         this.width = 640;
@@ -24,18 +24,16 @@ export class Game {
     resetPipes() {
         this.pipes = [this.newPipe(this.width, this.height)];
     }
-    reset() {
-        if (this.birds && this.birds.length > 0) {
-            let thisBest = this.birds.reduce((best, bird) => bird.score > best.score ? bird : best);
-            thisBest.gen = this.gen;
+    reset(fittest = undefined) {
+        if (fittest) {
             this.gen++;
-            this.best = !this.best || thisBest.score > this.best.score ? thisBest : this.best;
+            this.best = !this.best || fittest.score > this.best.score ? fittest : this.best;
         }
 
         this.resetPipes();
         this.birds = [];
         for (let i = 0; i < this.population; i++) {
-            let newBird = this.newBird(this.width, this.height, this.brain, this.mutate);
+            let newBird = this.newBird(this.width, this.height, this.mutate && fittest ? fittest.brain.clone() : this.brain, this.mutate);
             this.birds.push(newBird);
         }
     }
@@ -47,8 +45,8 @@ export class Game {
             bird.update(this.pipes)
         }
         if (this.birds.filter(bird => !bird.dead).length === 0) {
-            if (this.mutate) this.evolve();
-            else this.reset();
+            this.gen++;
+            this.reset(this.getFittest());
             return;
         }
         this.pipes.forEach(pipe => pipe.update());
@@ -57,7 +55,7 @@ export class Game {
         if (this.pipes.length > 0 && this.pipes[this.pipes.length - 1].x < this.width / 2)
             this.pipes.push(this.newPipe(this.width, this.height));
     }
-    evolve() {
+    getFittest() {
         let fittest = undefined;
         let sum = this.birds.reduce((sum, v) => (sum > 0 ? sum : 0) + (v.score - v.jumps));
         for (let bird of this.birds) {
@@ -69,15 +67,7 @@ export class Game {
         }
 
         fittest.gen = this.gen;
-        this.best = !this.best || fittest.score > this.best.score ? fittest : this.best;
 
-        this.resetPipes();
-        this.birds = [];
-        for (let i = 0; i < this.population; i++) {
-            let newBird = this.newBird(this.width, this.height, fittest.brain.clone(), this.mutate);
-            this.birds.push(newBird);
-        }
-
-        this.gen++;
+        return fittest;
     }
 }

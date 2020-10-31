@@ -38,7 +38,11 @@ class DrawingGame extends Game {
     draw() {
         this.ctx.clearRect(0, 0, this.width, this.height);
 
-        this.birds.forEach(bird => bird.draw(this.ctx));
+        let draws = 0;
+        for (let bird of this.birds) {
+            draws += bird.draw(this.ctx);
+            if (draws === 5) break;
+        }
         this.pipes.forEach(pipe => pipe.draw(this.ctx));
 
         this.ctx.fillStyle = "rgba(255, 255, 255)";
@@ -46,10 +50,17 @@ class DrawingGame extends Game {
     }
 }
 
-const evolutionPopulation = 100;
+let evolutionPopulation = 250;
 const game = new DrawingGame("#game", evolutionPopulation, true);
 const game2 = new DrawingGame("#gamerandom", evolutionPopulation);
 
+let popInput = document.querySelector("#population");
+popInput.value = evolutionPopulation;
+document.querySelector("#btnPop").addEventListener("click", (ev) => {
+    evolutionPopulation = popInput.value;
+    game.population = popInput.value;
+    game2.population = popInput.value;
+});
 document.querySelector("#save").addEventListener("click", (ev) => {
     Api.post("save", game.best);
 });
